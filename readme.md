@@ -307,7 +307,7 @@ You can open ip address in browser /index page (it should display a message -> "
 
 
 
-Just open <u>http://18.212.193.101/index]</u> for check. You may see text message there.
+Just open <u>http://18.212.193.101/index</u> to check. You may see text message there.
 
 
 If you see text message all is working, you can return to the Unity Project repository page and continue.

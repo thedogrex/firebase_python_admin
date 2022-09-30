@@ -26,7 +26,8 @@ It contains your project credentials for Firebase connection.
 1.3 Configure email templates:
      in python `main.py` sources you can configure email template:
 
-For verification in `send_confirm_email` function (118 line)     <img src="./readme/source_2.png" alt="source_2" style="zoom:80%;" />|
+For verification in `send_confirm_email` function (118 line)     <img src="./readme/source_2.png" alt="source_2" style="zoom:80%;" />
+
 For reset password in `send_change_password_email` function (191 line)
 <img src="./readme/source_3.png" alt="source_3" style="zoom:80%;" />
 

@@ -2,14 +2,6 @@
 
 Here is the sources of firebase python admin server. This server will send email confirmation links and manage users of firebase project using FirebaseAdminSDK.
 
-Create Ec2 Ubuntu-18.04 instance  on amazon and connect to it using ssh key.
-<img src="./readme/aws_1.png" alt="aws_1" style="zoom:60%;" />
-
-current server ip is: 
-Firebase Python Admin server IP:`18.212.193.101`
-
-I will use it in further details, but your Ip  will be different if you create your own machine. Just replace it by your server public IP.
-
 
 ### 1. Server configuration
 
@@ -44,13 +36,21 @@ For reset password in `send_change_password_email` function (191 line)
 
 
 
-### <u>Next steps should be done on Amazon server machine (using ssh connection console)</u>
+### 2. Create Ec2 Ubuntu-18.04 instance  on amazon.
 
-<u>Am using Putty to connect.</u>
+<img src="./readme/aws_1.png" alt="aws_1" style="zoom:60%;" />
 
+current server ip is: 
 
+Firebase Python Admin server IP:`18.212.193.101`
 
-## 2. Setup Git, Python and clone git repository
+I will use it in further details, but your IP  will be different if you create your own machine. Just replace it by your server public IP.
+
+### <u>Next steps should be done on Amazon server machine </u>
+
+### <u>(using ssh connection console)</u>
+
+Am using Putty to connect.
 
 After you connect you need to configure server:
 

@@ -218,14 +218,14 @@ And turn on Firewall:
 sudo ufw enable
 ```
 
-
-
 Need to restart ssh service after:
 
 ```
 sudo su
 systemctl restart ssh
 ```
+
+reconnect to the console.
 
 #### Create Unit Services for GUnicorn:
 
@@ -251,7 +251,6 @@ ExecStart=/home/ubuntu/firebase_admin/venv/bin/gunicorn --workers 1 --timeout 18
 
 [Install]
 WantedBy=multi-user.target
-
 ```
 
 

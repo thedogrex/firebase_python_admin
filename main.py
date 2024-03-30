@@ -80,7 +80,7 @@ def verify_email():
 
 # -------------------------------------------------------------------
 @app.route('/send-confirm-email', methods=methods)
-def confirm_email():
+def send_confirm_email():
 
     try:
         name, email = parseaddr(request.args.get('email'))

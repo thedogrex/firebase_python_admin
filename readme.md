@@ -1,12 +1,65 @@
-## Installation
+# Firebase Python Admin server
 
-Linux installation steps:
+Here is the sources of firebase python admin server. This server will send email confirmation links and manage users of firebase project using FirebaseAdminSDK.
+
+
+### 1. Server configuration
+
+Copy **firebase_python_admin** git project on your local machine and make some configuration changes.
+
+1.1. During firebase installation steps you have copied **FirebaseAdminSDK** config json file on your desktop. 
+
+Rename it to `firebase_service.json` and replace in current **firebase_python_admin** git reposiitory.
+
+It contains your project credentials for Firebase connection.
+
+1.2 Configure in `main.py` file parameters:
+
+   <img src="./readme/source_1.png" alt="source_1" style="zoom: 80%;" />
+
+​	`DEEPLINK_DOMAIN_NAME` - name of domain that you have access to. This domain will be used for deeplinking URLs.
+​    `SMTP_SERVER` - now we are using google to send emails (google standart smtp server)
+​    `SMTP_LOGIN` - google email account (with 2FA enabled and service token created)
+​    `SMTP_PASSWORD` - google email account service token (third party access token)
+​    `SERVICE_MAIL`: sender email 
+
+1.3 Configure email templates:
+     in python `main.py` sources you can configure email template:
+
+For verification in `send_confirm_email` function (118 line)     <img src="./readme/source_2.png" alt="source_2" style="zoom:80%;" />
+
+For reset password in `send_change_password_email` function (191 line)
+<img src="./readme/source_3.png" alt="source_3" style="zoom:80%;" />
+
+
+
+#### ----!!!--- Don't forget to push firebase_python_admin configuration changes to git ---!!!----
+
+
+
+### 2. Create Ec2 Ubuntu-18.04 instance  on amazon.
+
+<img src="./readme/aws_1.png" alt="aws_1" style="zoom:60%;" />
+
+current server ip is: 
+
+Firebase Python Admin server IP:`18.212.193.101`
+
+I will use it in further details, but your IP  will be different if you create your own machine. Just replace it by your server public IP.
+
+### <u>Next steps should be done on Amazon server machine </u>
+
+### <u>(using ssh connection console)</u>
+
+Am using Putty to connect.
+
+After you connect you need to configure server:
 
 1. Install git
 
 `sudo apt-get install git`
 
-3. Update apt-get links
+2. Update apt-get links
 
 `sudo apt update`
 
@@ -14,17 +67,18 @@ upgrade system apps
 
 `sudo apt upgrade`
 
-4. Install build tools 
-    `sudo apt-get install build-essential`
+3. Install build tools 
+   `sudo apt-get install build-essential`
 
 4. Install pyenv
 
-- `curl https://pyenv.run | bash`
+`curl https://pyenv.run | bash`
 
-  (see instructions in console and add changes to files )
+(see instructions in console and add changes to files )
 
-add this code to `~/.bash_profile` if it exists, otherwise `~/.profile` (for login shells)
-and `~/.bashrc` files (for interactive shells) 
+add this code to  `~/.profile` (for login shells) and `~/.bashrc` files (for interactive shells)  
+
+am using `vim` tool here
 
 ```bash
 export PYENV_ROOT="$HOME/.pyenv"
@@ -32,13 +86,13 @@ command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init --path)"
 ```
 
-Add this code to ~/.bashrc
+Add this code to `~/.bashrc`
 
 ```bash
 eval "$(pyenv virtualenv-init -)"
 ```
 
-& Restart console to take effect (I am using putty connection )
+& Restart console to take effect (and reconnect)
 
 Check that all works, try to update pyenv
 
@@ -78,23 +132,21 @@ pyenv install 3.10.4
 
 
 
-COPY GIT PROJECT AND CREATE VIRTUAL ENVIRONMENT FOR IT:
+8. COPY GIT PROJECT AND CREATE VIRTUAL ENVIRONMENT FOR IT:
 
-clone git repo into folder:
-
-```
-/home/ubuntu/firebase_admin
-```
-
-where ubuntu -> your user name (can be other)
-
-navigate to cloned repository by a coomand:
+   clone git **Firebase Python Admin server** repo into folder:
 
 ```
-cd firebase_admin
+git clone https://github.com/thedogrex/firebase_python_admin /home/ubuntu/firebase_admin
 ```
 
-Create virtual env for future python modules
+navigate to the cloned repository folder by a command:
+
+```
+pushd /home/ubuntu/firebase_admin
+```
+
+Create virtual env for python modules
 
 ```
 python -m venv venv
@@ -121,13 +173,7 @@ pip install flask
 
 
 
-## Server bootstrap
-
-#### Server bootstrap
-
-Install all modules from Installation page. 
-
-And after that setup server as described here.
+## 3. Server bootstrap (make it available in public web) 
 
 ### How it works:
 
@@ -136,17 +182,9 @@ And after that setup server as described here.
 Nginx will work like a proxy to connect and process requests from on Flask python application. 
 Gunicorn will work like a container for Flask applications (will create Flask instance automatically on each request)
 
-### Setup
-
-Update system:
-
-1) `sudo apt update`
-
-2) `sudo apt upgrade`
-
 ##### Install components:
 
-​	`sudo apt install mc git curl wget rsync zip unzip`
+​	`sudo apt install mc wget rsync zip unzip`
 
 ##### Install nginx:
 
@@ -159,8 +197,6 @@ We will configure nginx to work as proxy server in future.
 
 `pip install gunicorn`
 
-
-
 ##### Setup Firewall
 
 ```
@@ -171,6 +207,9 @@ Turn on configurations of firewall:
 
 ```
 sudo ufw allow 'OpenSSH'
+```
+
+```
 sudo ufw allow 'Nginx Full'
 ```
 
@@ -180,22 +219,18 @@ And turn on Firewall:
 sudo ufw enable
 ```
 
-
-
-Need to restart ssh servie after:
+Need to restart ssh service after:
 
 ```
 sudo su
 systemctl restart ssh
 ```
 
-Disconnnect and reconnect after with putty ssh (or login/password)
-
-
+reconnect to the console.
 
 #### Create Unit Services for GUnicorn:
 
-Gunicorn service:
+Gunicorn service (create this file) using `sudo vim`:
 
 `/etc/systemd/system/gunicorn_my.service`
 
@@ -217,7 +252,6 @@ ExecStart=/home/ubuntu/firebase_admin/venv/bin/gunicorn --workers 1 --timeout 18
 
 [Install]
 WantedBy=multi-user.target
-
 ```
 
 
@@ -231,7 +265,7 @@ must be the path of installed gunicorn component inside venv python virtual envi
 
 
 
-#### Add created services to autorun:
+#### Add services to autorun:
 
 `sudo systemctl enable gunicorn_my`
 
@@ -242,6 +276,7 @@ must be the path of installed gunicorn component inside venv python virtual envi
 #### Setup nginx proxy:
 
 remove `@default` file from `/etc/nginx/sites-enabled/` folder
+am using `sudo mc` navigator  for this task
 
 
 
@@ -268,9 +303,13 @@ server {
 
 
 
-Now you can reboot server machine and it should automatically run all services for blender render.
+Now you need to reboot server machine and it should automatically run all services. 
 You can open ip address in browser /index page (it should display a message -> "Firebase admin server is running" )
 
 
 
-Just open <u>http://[your-server-ip-address/index]</u> for check. You may see text message there.
+Just open <u>http://18.212.193.101/index</u> to check. You may see text message there.
+
+
+If you see text message all is working, you can return to the Unity Project repository page and continue.
+
